@@ -25,13 +25,16 @@
 			return '' +
 				FC.DayTableMixin.renderHeadTrHtml.apply(this) +
 				'<tr>' +
-					(this.isRTL ? '' : this.renderHeadIntroHtml()) +
+					(this.isRTL ? '' : this.renderResourceHeadIntroHtml()) +
 					this.renderResourceHeadCellsHtml() +
-					(this.isRTL ? this.renderHeadIntroHtml() : '') +
+					(this.isRTL ? this.renderResourceHeadIntroHtml() : '') +
 				'</tr>';
 		},
 		// cell renderer for resource title header
-		// this method mimics the FC.DayTableMixin.renderHeadDateCellsHtml, FC.DayTableMixin.renderHeadDateCellHtml
+		// this method mimics the basicDayGridMethods.renderIntroHtml, FC.DayTableMixin.renderHeadDateCellsHtml, FC.DayTableMixin.renderHeadDateCellHtml
+		renderResourceHeadIntroHtml: function() {
+			return '<td class="fc-axis" ' + this.view.axisStyleAttr() + '></td>';
+		},
 		renderResourceHeadCellsHtml: function() {
 			var htmls = [];
 			var col;
