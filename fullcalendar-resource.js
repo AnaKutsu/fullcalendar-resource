@@ -26,26 +26,26 @@
 				FC.DayTableMixin.renderHeadTrHtml.apply(this) +
 				'<tr>' +
 					(this.isRTL ? '' : this.renderHeadIntroHtml()) +
-					this.renderHeadResourceCellsHtml() +
+					this.renderResourceHeadCellsHtml() +
 					(this.isRTL ? this.renderHeadIntroHtml() : '') +
 				'</tr>';
 		},
 		// cell renderer for resource title header
-		// this method mimics the FC.DayTableMixin.renderHeadDateCellsHtml and FC.DayTableMixin.renderHeadDateCellHtml
-		renderHeadResourceCellsHtml: function() {
+		// this method mimics the FC.DayTableMixin.renderHeadDateCellsHtml, FC.DayTableMixin.renderHeadDateCellHtml
+		renderResourceHeadCellsHtml: function() {
 			var htmls = [];
 			var col;
 
 			for (var col = 0; col < this.colCnt; col += this.view.resources.length) {
 				date = this.getCellDate(0, col);
 				for (r = 0; r < this.view.resources.length; r++) {
-					htmls.push(this.renderHeadResourceCellHtml(date, this.view.resources[r]));
+					htmls.push(this.renderResourceHeadCellHtml(date, this.view.resources[r]));
 				}
 			}
 
 			return htmls.join('');
 		},
-		renderHeadResourceCellHtml: function(date, resource, colspan, otherAttrs) {
+		renderResourceHeadCellHtml: function(date, resource, colspan, otherAttrs) {
 			var view = this.view;
 
 			return '' +
