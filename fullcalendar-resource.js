@@ -83,14 +83,32 @@
 			var segs = FC.Grid.prototype.eventSpanToSegs.apply(this, [span, event, segSliceFunc]);
 
 			for (var i = 0; i < segs.length; i++) {
-				var resourceCol = 0;
+				var shift = 0;
 				var seg = segs[i];
 				if (seg.event && seg.event.resourceId) {
-					resourceCol = this.view.resourcesById[seg.event.resourceId].__index;
+					shift = this.view.resourcesById[seg.event.resourceId].__index;
 				}
-				seg.col = seg.col * this.view.resources.length + resourceCol;
+				seg.col = seg.col * this.view.resources.length + shift;
 			}
 			return segs;
+		},
+		// override "FC.DayGrid.buildSegLevels" method to shift col of event
+		buildSegLevels: function(segs) {
+			var segLevels = FC.DayGrid.prototype.buildSegLevels.apply(this, [segs]);
+
+			for (var i = 0; i < segLevels.length; i++) {
+				var segLevel = segLevels[i];
+				for (var j = 0; j < segLevel.length; j++) {
+					var seg = segLevel[j];
+					var shift = 0;
+					if (seg.event && seg.event.resourceId) {
+						shift = this.view.resourcesById[seg.event.resourceId].__index;
+					}
+					seg.leftCol = seg.leftCol * this.view.resources.length + shift;
+					seg.rightCol = seg.rightCol * this.view.resources.length + shift;
+				}
+			}
+			return segLevels;
 		},
 	};
 	FC.ResourceTimeGrid = FC.TimeGrid.extend({});
