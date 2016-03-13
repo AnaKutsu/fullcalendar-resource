@@ -113,10 +113,10 @@
 	};
 	DayGridOverride = {
 		eventDragging: null,
-		// override "FC.Grid.spanToSegs" method to shift col of event
-		segDragStart: function(seg, ev) {
-			FC.Grid.prototype.segDragStart.apply(this, [seg, ev]);
+		// override "FC.DayGrid.renderDrag" method to shift col of event
+		renderDrag: function(eventLocation, seg) {
 			this.eventDragging = seg.event;
+			FC.DayGrid.prototype.renderDrag.apply(this, [eventLocation, seg]);
 		},
 		// override "FC.DayGrid.spanToSegs" method to shift col of event
 		spanToSegs: function(span) {
@@ -127,8 +127,7 @@
 				var shift = 0;
 				if (seg.event && seg.event.resourceId) {
 					shift = this.view.resourcesById[seg.event.resourceId].__index;
-				}
-				if (this.isDraggingSeg && this.eventDragging && this.eventDragging.resourceId) {
+				} else if (this.eventDragging && this.eventDragging.resourceId) {
 					shift = this.view.resourcesById[this.eventDragging.resourceId].__index;
 				}
 				seg.leftCol = seg.firstRowDayIndex * this.view.resources.length + shift;
