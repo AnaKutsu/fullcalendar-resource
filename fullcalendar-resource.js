@@ -113,7 +113,7 @@
 	};
 	DayGridOverride = {
 		eventDragging: null,
-		// override "FC.DayGrid.renderDrag" method to shift col of event
+		// override "FC.DayGrid.renderDrag" method to backup dragging event
 		renderDrag: function(eventLocation, seg) {
 			this.eventDragging = seg.event;
 			FC.DayGrid.prototype.renderDrag.apply(this, [eventLocation, seg]);
