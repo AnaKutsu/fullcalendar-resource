@@ -83,7 +83,7 @@
 				var resourceCol = 0;
 				var seg = segs[i];
 				if (seg.event && seg.event.resource) {
-					resourceCol = this.view.resourcesById[seg.event.resource].__index;
+					resourceCol = this.view.resourcesById[seg.event.resourceId].__index;
 				}
 				seg.col = seg.col * this.view.resources.length + resourceCol;
 			}
