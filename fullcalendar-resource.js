@@ -2,7 +2,7 @@
 	var dayIDs = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 	var FC = $.fullCalendar;
 
-	DayTableMixinOverride = {
+	TimeGridOverride = {
 		// override "FC.DayTableMixin.computeColCnt" method to add rows with resource length
 		computeColCnt: function() {
 			return FC.DayTableMixin.computeColCnt.apply(this) * this.view.resources.length;
@@ -88,7 +88,7 @@
 				if (seg.event && seg.event.resourceId) {
 					shift = this.view.resourcesById[seg.event.resourceId].__index;
 				}
-				seg.col = seg.col * this.view.resources.length + shift;
+				seg.col = seg.dayIndex * this.view.resources.length + shift;
 			}
 			return segs;
 		},
@@ -104,17 +104,44 @@
 					if (seg.event && seg.event.resourceId) {
 						shift = this.view.resourcesById[seg.event.resourceId].__index;
 					}
-					seg.leftCol = seg.leftCol * this.view.resources.length + shift;
-					seg.rightCol = seg.rightCol * this.view.resources.length + shift;
+					seg.leftCol = seg.firstRowDayIndex * this.view.resources.length + shift;
+					seg.rightCol = seg.lastRowDayIndex * this.view.resources.length + shift;
 				}
 			}
 			return segLevels;
 		},
 	};
+	DayGridOverride = {
+		eventDragging: null,
+		// override "FC.Grid.spanToSegs" method to shift col of event
+		segDragStart: function(seg, ev) {
+			FC.Grid.prototype.segDragStart.apply(this, [seg, ev]);
+			this.eventDragging = seg.event;
+		},
+		// override "FC.DayGrid.spanToSegs" method to shift col of event
+		spanToSegs: function(span) {
+			var segs = FC.DayGrid.prototype.spanToSegs.apply(this, [span]);
+
+			for (var i = 0; i < segs.length; i++) {
+				var seg = segs[i];
+				var shift = 0;
+				if (seg.event && seg.event.resourceId) {
+					shift = this.view.resourcesById[seg.event.resourceId].__index;
+				}
+				if (this.isDraggingSeg && this.eventDragging && this.eventDragging.resourceId) {
+					shift = this.view.resourcesById[this.eventDragging.resourceId].__index;
+				}
+				seg.leftCol = seg.firstRowDayIndex * this.view.resources.length + shift;
+				seg.rightCol = seg.lastRowDayIndex * this.view.resources.length + shift;
+			}
+			return segs;
+		},
+	};
 	FC.ResourceTimeGrid = FC.TimeGrid.extend({});
-	FC.ResourceTimeGrid.mixin(DayTableMixinOverride);
+	FC.ResourceTimeGrid.mixin(TimeGridOverride);
 	FC.ResourceDayGrid = FC.DayGrid.extend({});
-	FC.ResourceDayGrid.mixin(DayTableMixinOverride);
+	FC.ResourceDayGrid.mixin(TimeGridOverride);
+	FC.ResourceDayGrid.mixin(DayGridOverride);
 	FC.ResourceView = FC.AgendaView.extend({
 		resources: [],
 		resourcesById: {},
